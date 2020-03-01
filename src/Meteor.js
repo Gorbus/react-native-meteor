@@ -93,6 +93,7 @@ module.exports = {
       if (isConnected && Data.ddp.autoReconnect) {
         Data.ddp.connect();
       }
+    }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
