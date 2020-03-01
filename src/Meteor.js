@@ -89,20 +89,10 @@ module.exports = {
       ...options,
     });
 
-    NetInfo.fetch().then(state => {
-      console.log('Connection type', state.type);
-      console.log('Is connected?', state.isConnected);
-      let isConnected = state.isConnected;
-      if (isConnected)
-        NetInfo.isConnected.addEventListener(
-          'connectionChange',
-          isConnected => {
-            if (isConnected && Data.ddp.autoReconnect) {
-              Data.ddp.connect();
-            }
-          }
-        );
-    });
+    NetInfo.addEventListener('connectionChange', isConnected => {
+      if (isConnected && Data.ddp.autoReconnect) {
+        Data.ddp.connect();
+      }
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
