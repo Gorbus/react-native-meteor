@@ -1,4 +1,5 @@
-import { NetInfo, Platform, View } from 'react-native';
+import { Platform, View } from 'react-native';
+import NetInfo from '@react-native-community/netinfo';
 
 import reactMixin from 'react-mixin';
 import Trackr from 'trackr';
@@ -88,10 +89,19 @@ module.exports = {
       ...options,
     });
 
-    NetInfo.isConnected.addEventListener('connectionChange', isConnected => {
-      if (isConnected && Data.ddp.autoReconnect) {
-        Data.ddp.connect();
-      }
+    NetInfo.fetch().then(state => {
+      console.log('Connection type', state.type);
+      console.log('Is connected?', state.isConnected);
+      let isConnected = state.isConnected;
+      if (isConnected)
+        NetInfo.isConnected.addEventListener(
+          'connectionChange',
+          isConnected => {
+            if (isConnected && Data.ddp.autoReconnect) {
+              Data.ddp.connect();
+            }
+          }
+        );
     });
 
     Data.ddp.on('connected', () => {
@@ -176,7 +186,10 @@ module.exports = {
       const call = Data.calls.find(call => call.id == message.id);
       if (typeof call.callback == 'function')
         call.callback(message.error, message.result);
-      Data.calls.splice(Data.calls.findIndex(call => call.id == message.id), 1);
+      Data.calls.splice(
+        Data.calls.findIndex(call => call.id == message.id),
+        1
+      );
     });
 
     Data.ddp.on('nosub', message => {
