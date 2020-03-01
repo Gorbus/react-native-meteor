@@ -1,5 +1,4 @@
-import { Platform, View } from 'react-native';
-import NetInfo from '@react-native-community/netinfo';
+import { NetInfo, Platform, View } from 'react-native';
 
 import reactMixin from 'react-mixin';
 import Trackr from 'trackr';
@@ -93,7 +92,7 @@ module.exports = {
       if (isConnected && Data.ddp.autoReconnect) {
         Data.ddp.connect();
       }
-    }
+    });
 
     Data.ddp.on('connected', () => {
       // Clear the collections of any stale data in case this is a reconnect
